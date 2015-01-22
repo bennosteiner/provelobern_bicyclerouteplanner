@@ -1,4 +1,9 @@
 #!/bin/sh
+AS_POSTGRES="sudo -u postgres"
+DB="provelo"
+
+mkdir -p srtm
+cd srtm
 
 if [ ! -e srtm_38_03.zip ]
 then
@@ -8,24 +13,24 @@ then
 fi
 
 echo "Extracting SRTM data"
-unzip -o srtm_38_03.zip srtm_39_03.zip
+unzip -o srtm_38_03.zip
+unzip -o srtm_39_03.zip
 
 echo "Creating virtual dem with a custom bounding box (could be trimmed down further)"
 gdalbuildvrt  -te 5.18162 45.2794 11.2781 48.3485 swiss_srtm.vrt srtm_38_03.tif srtm_39_03.tif
 
 echo "Creating SQL data"
-raster2pgsql -s EPSG:4326 -I -C -M -t auto swiss_srtm.vrt > srtm.sql
+raster2pgsql -s EPSG:4326 -I -M -d -t auto swiss_srtm.vrt srtm > srtm.sql
 
 echo "Creating and importing database"
-psql -c "DROP DATABASE srtm;"
-createdb srtm
-psql -d srtm -c "CREATE EXTENSION postgis;"
-psql -d srtm -f srtm.sql 
+$AS_POSTGRES createdb $DB
+$AS_POSTGRES psql -d $DB -c "CREATE EXTENSION postgis;"
+$AS_POSTGRES psql -d $DB -f srtm.sql 
 
 
 echo "Tests should print 48MB and 472m"
-TEST1="SELECT pg_size_pretty(pg_total_relation_size('swiss_srtm'));"
-TEST2="select ST_Value(rast, ST_SetSRID(ST_MakePoint(6,46),4326)) from swiss_srtm where ST_Intersects(rast, ST_SetSRID(ST_MakePoint(6,46),4326));"
-psql -d srtm -c "$TEST1"
-psql -d srtm -c "$TEST2"
+TEST1="SELECT pg_size_pretty(pg_total_relation_size('srtm'));"
+TEST2="select ST_Value(rast, ST_SetSRID(ST_MakePoint(6,46),4326)) from srtm where ST_Intersects(rast, ST_SetSRID(ST_MakePoint(6,46),4326));"
+$AS_POSTGRES psql -d $DB -c "$TEST1"
+$AS_POSTGRES psql -d $DB -c "$TEST2"
 
