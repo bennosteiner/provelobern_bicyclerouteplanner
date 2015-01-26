@@ -27,6 +27,12 @@ $AS_POSTGRES createdb $DB
 $AS_POSTGRES psql -d $DB -c "CREATE EXTENSION postgis;"
 $AS_POSTGRES psql -d $DB -f srtm.sql 
 
+echo "Creating user provelo"
+$AS_POSTGRES psql -c "CREATE USER provelo WITH PASSWORD 'provelo';"
+$AS_POSTGRES psql -c "GRANT CONNECT ON DATABASE provelo TO provelo;"
+$AS_POSTGRES psql -d $DB -c "GRANT USAGE ON SCHEMA public TO provelo;"
+$AS_POSTGRES psql -d $DB -c "GRANT SELECT ON srtm TO provelo;"
+
 
 echo "Tests should print 48MB and 472m"
 TEST1="SELECT pg_size_pretty(pg_total_relation_size('srtm'));"
