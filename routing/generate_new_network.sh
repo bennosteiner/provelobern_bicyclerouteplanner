@@ -5,10 +5,19 @@
 # If all went well, the data in /var/sig/osrm will be overwritten.
 # Then the osrm-routed daemons must be restarted.
 
-NOW=`date '+%Y_%m_%d_%Hh'`
-OSMFILE='switzerland-padded.osm'
+
 #PROFILES='upstream fast quiet ebike'
-PROFILES='upstream'
+#PROFILES='upstream'
+PROFILES='elevation'
+OSMFILE=`ls *.osm.pbf |head -n 1 | sed 's/.pbf//'`
+
+CHECK_DIR=`pwd | sed 's/.*\///' | head -c 2`
+if [ "X$CHECK_DIR" != "X20" ]
+then
+  echo "Must be called from a 20XXX directory"
+  exit 1
+fi
+
 
 set -o errexit
 
@@ -18,23 +27,6 @@ cleanup() {
 }
 trap "cleanup" INT TERM EXIT
 
-
-mkdir -p $NOW
-
-cd $NOW
-echo "Moving to `pwd` directory"
-
-\cp -Rf ../profiles .
-
-
-# Download osm data
-if [ ! -e $OSMFILE.pbf ]
-then
-	echo "Downloading hourly updated data for Switzerland and neighbouring cities to $OSMFILE.pbf"
-	wget http://planet.osm.ch/$OSMFILE.pbf
-else
-	echo "Skipped download of osm data to $OSMFILE.pbf"
-fi
 
 # Uncompress since osrm runs out of memory when using the pbf file directly
 if [ ! -e $OSMFILE ]
@@ -48,12 +40,9 @@ fi
 
 for profile in $PROFILES
 do
-	mkdir -p $profile
-	cd $profile
-
-	cat ../profiles/$profile.lua > $profile.lua
-	ln -fs ../profiles/lib
-	ln -fs ../$OSMFILE $profile.osm
+  cd profiles
+  rm -f $profile.osm
+  ln -s ../$OSMFILE $profile.osm
 
 	# Extract with profile
 	echo "Extracting data with profile $profile"
@@ -65,7 +54,6 @@ do
 
 	rm -f $profile.osm
 	rm -f $profile.osrm
-	rm -f lib
 	cd ..
 done
 

@@ -86,7 +86,7 @@ node,way   area         text         # hard coded support for area=1/yes => dele
 node,way   barrier      text         delete
 node,way   bicycle      text
 node,way   brand        text         delete
-node,way   bridge       text         delete
+node,way   bridge       text         linear
 node,way   boundary     text         delete
 node,way   building     text         delete
 node       capital      text         delete
@@ -101,7 +101,7 @@ node,way   embankment   text         delete
 node,way   foot         text         delete
 node,way   generator:source    text  delete
 node,way   harbour      text         delete
-node,way   highway      text         delete
+node,way   highway      text         linear
 node,way   historic     text         delete
 node,way   horse        text         delete
 node,way   intermittent text         delete
