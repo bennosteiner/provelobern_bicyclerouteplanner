@@ -30,3 +30,4 @@ Then new data should be used as production and old one kept as backup.
 ----- Useful commands and notes -----
 Extract Bern area  osmosis  --read-xml enableDateParsing=no file=swiss/switzerland-padded.osm  --bounding-box top=47 left=7.2 bottom=46.9 right=7.6 --write-xml file=swiss_extract.osm
 A non-unix 'provelo' user is created and given select privilegies on the srtm and osm line tables
+Computation of elevation of an individual way may be tested out of OSRM using 'lua test_elevation_profile.lua 3230982'
