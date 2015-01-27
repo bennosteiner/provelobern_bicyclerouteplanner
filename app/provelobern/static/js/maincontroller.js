@@ -13,6 +13,8 @@ goog.require('goog.net.CorsXmlHttpFactory');
 goog.require('goog.net.XhrIo');
 goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.Location');
+goog.require('ngeo.btnDirective');
+goog.require('ngeo.btngroupDirective');
 goog.require('ngeo.mapDirective');
 goog.require('ol.Feature');
 goog.require('ol.Map');
@@ -138,7 +140,7 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     layerFilterThis: this
   });
   dragInteraction.on(app.Drag.FEATUREDRAGEND, function(evt) {
-    this.updateRoute_();
+    this.updateRoute();
   }, this);
 
   /**
@@ -222,6 +224,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     lang = ngeoGetBrowserLanguage(projectLanguages) || 'en';
   }
   this.switchLanguage(lang);
+  this['profile'] = {
+    'fast': true,
+    'quiet': false,
+    'ebike': false
+  };
   this['status'] = '';
 };
 
@@ -284,13 +291,28 @@ app.MainController.prototype.setTargetCoordinate_ = function(coord) {
 
 
 /**
- * @private
+ * @export
  */
-app.MainController.prototype.updateRoute_ = function() {
+app.MainController.prototype.updateRoute = function() {
   if (this.startFeature_ === null || this.targetFeature_ === null) {
     return;
   }
   this.requestRoute_();
+};
+
+
+/**
+ * @private
+ * @return {string} The profile to use.
+ */
+app.MainController.prototype.getProfile_ = function() {
+  if (this['profile']['fast']) {
+    return 'fast';
+  } else if (this['profile']['quiet']) {
+    return 'quiet';
+  } else {
+    return 'ebike';
+  }
 };
 
 
@@ -308,7 +330,7 @@ app.MainController.prototype.requestRoute_ = function() {
       toPoint.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
 
   var url = this.osrmUrl_
-    .replace('{profile}', 'upstream')
+    .replace('{profile}', this.getProfile_())
     .replace('{from}', from[1] + ',' + from[0])
     .replace('{to}', to[1] + ',' + to[0])
     .replace('{zoom}', '20');

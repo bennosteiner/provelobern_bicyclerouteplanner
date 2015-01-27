@@ -44,16 +44,13 @@
               <span class="input-group-addon">B</span>
               <input type="text" class="form-control input-sm" placeholder="{{'To'|translate}}">
             </div>
-            <div class="routing-type btn-group" data-toggle="buttons">
-              <label class="btn btn-primary active btn-sm">
-                <input type="radio" name="route-type" id="type-direct" autocomplete="off" checked> {{'Direct'|translate}}
-              </label>
-              <label class="btn btn-primary btn-sm">
-                <input type="radio" name="route-type" id="type-optimized" autocomplete="off"> {{'Optimized'|translate}}
-              </label>
-              <label class="btn btn-primary btn-sm">
-                <input type="radio" name="route-type" id="type-ebike" autocomplete="off"> {{'E-Bike'|translate}}
-              </label>
+            <div ngeo-btn-group class="routing-type btn-group">
+              <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.fast"
+                ng-click="ctrl.updateRoute()">{{'Direct'|translate}}</button>
+              <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.quiet"
+                ng-click="ctrl.updateRoute()">{{'Optimized'|translate}}</button>
+              <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.ebike"
+                ng-click="ctrl.updateRoute()">{{'E-Bike'|translate}}</button>
             </div>
           </div>
           <div ng-show="ctrl.status == 'route'" class="routeResults">
