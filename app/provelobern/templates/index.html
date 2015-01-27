@@ -56,6 +56,16 @@
               </label>
             </div>
           </div>
+          <div ng-show="ctrl.status == 'route'" class="routeResults">
+            <p>{{'Estimated duration:'|translate}} <span>{{ctrl.routeTime|time}}</span></p>
+            <p>{{'Distance:'|translate}} <span>{{ctrl.routeDistance|meters}}</span></p>
+          </div>
+          <div ng-show="ctrl.status == 'error'" class="routeError">
+            <p>{{'An error occurred, please retry.'|translate}}</p>
+          </div>
+          <div ng-show="ctrl.status == 'route-invalid'" class="routeInvalid">
+            <p>{{'No route found between the two given positions.'|translate}}</p>
+          </div>
         </div>
       </div>
 
