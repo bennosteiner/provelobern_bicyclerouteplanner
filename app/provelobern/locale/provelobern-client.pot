@@ -4,6 +4,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: provelobern/templates/index.html
+msgid "An error occurred, please retry."
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid "Bicycle Route Planner | Pro Velo Bern"
 msgstr ""
 
@@ -12,7 +16,15 @@ msgid "Direct"
 msgstr ""
 
 #: provelobern/templates/index.html
+msgid "Distance:"
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid "E-Bike"
+msgstr ""
+
+#: provelobern/templates/index.html
+msgid "Estimated duration:"
 msgstr ""
 
 #: provelobern/templates/index.html
@@ -21,6 +33,10 @@ msgstr ""
 
 #: provelobern/templates/index.html
 msgid "Imprint"
+msgstr ""
+
+#: provelobern/templates/index.html
+msgid "No route found between the two given positions."
 msgstr ""
 
 #: provelobern/templates/index.html

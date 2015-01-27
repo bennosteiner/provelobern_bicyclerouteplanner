@@ -11,6 +11,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: provelobern/templates/index.html
+msgid "An error occurred, please retry."
+msgstr "Ein Fehler ist aufgetreten, bitte versuchen Sie es erneut."
+
+#: provelobern/templates/index.html
 msgid "Bicycle Route Planner | Pro Velo Bern"
 msgstr "Veloroutenplaner | Pro Velo Bern"
 
@@ -19,8 +23,16 @@ msgid "Direct"
 msgstr "Direkt"
 
 #: provelobern/templates/index.html
+msgid "Distance:"
+msgstr "Distanz:"
+
+#: provelobern/templates/index.html
 msgid "E-Bike"
 msgstr "E-Bike"
+
+#: provelobern/templates/index.html
+msgid "Estimated duration:"
+msgstr "Geschätzte Zeit:"
 
 #: provelobern/templates/index.html
 msgid "From"
@@ -29,6 +41,10 @@ msgstr "Von"
 #: provelobern/templates/index.html
 msgid "Imprint"
 msgstr "Impressum"
+
+#: provelobern/templates/index.html
+msgid "No route found between the two given positions."
+msgstr "Es konnte keine Route zwischen den zwei Positionen ermittelt werden."
 
 #: provelobern/templates/index.html
 msgid "Optimized"
@@ -43,8 +59,8 @@ msgid ""
 msgstr ""
 "Der Veloroutenplaner von <a href=\"http://www.provelobern.ch/\" target="
 "\"_blank\">Pro Velo Bern</a> und\n"
-"              der <a href=\"http://www.bern.ch/\" target=\"_blank"
-"\">Stadt Bern</a> basiert auf OpenStreetMap Daten."
+"              der <a href=\"http://www.bern.ch/\" target=\"_blank\">Stadt "
+"Bern</a> basiert auf OpenStreetMap Daten."
 
 #: provelobern/templates/index.html
 msgid "To"
