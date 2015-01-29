@@ -13,6 +13,7 @@ fi
 $AS_POSTGRES osm2pgsql --slim --drop --latlong -r pbf -S ../osm_import_style -d $DB -c $OSMFILE
 
 $AS_POSTGRES psql -d $DB -c "GRANT SELECT ON planet_osm_line TO provelo;"
+$AS_POSTGRES psql -d $DB -c "CREATE INDEX planet_osm_line_way_id_index ON planet_osm_line (osm_id);"
 
 # Tests
 echo "Retrieve the altitude of a given OSM node"
