@@ -69,9 +69,26 @@ local function compute_average_inclination_factors(segments)
   end
 end
 
+local simplifyRequest = false
+
 local function query_database(way_id)
   -- Splits the way in segments and compute lengths and elevations.
-  local sqlquery = "with temp as "
+  local sqlqueryLight = "with temp as "
+    .. "(select "
+      .. "ST_Length(way::geography, false) as total_length, "
+      .. "ST_PointN(way, 1) as p1, "
+      .. "ST_PointN(way, ST_NPoints(way)) as p2 "
+      .. "from (select way from planet_osm_line as line where line.osm_id = " .. way_id .. " ) "
+    .. "as g) "
+    .. "select "
+      .. "ST_Value(srtm1.rast, p1) as p1_height, "
+      .. "ST_Value(srtm2.rast, p2) as p2_height, "
+--      .. "ST_AsText(p1) as p1_str, ST_AsText(p2) as p2_str, "
+      .. "total_length as length, "
+      .. "total_length "
+    .. "from temp, srtm as srtm1, srtm as srtm2 "
+      .. "where ST_Intersects(srtm1.rast, p1) and ST_Intersects(srtm2.rast, p2) ;"
+  local sqlqueryFull = "with temp as "
     .. "(select "
       .. "ST_Length(way::geography, false) as total_length, "
       .. "ST_PointN(way, generate_series(1, ST_NPoints(way)-1)) as p1, "
@@ -79,12 +96,14 @@ local function query_database(way_id)
       .. "from (select way from planet_osm_line as line where line.osm_id = " .. way_id .. " ) "
     .. "as g) "
     .. "select "
-      .. "ST_Value(rast, p1) as p1_height, "
-      .. "ST_Value(rast, p2) as p2_height, "
-      .. "ST_AsText(p1) as p1_str, ST_AsText(p2) as p2_str, "
+      .. "ST_Value(srtm1.rast, p1) as p1_height, "
+      .. "ST_Value(srtm2.rast, p2) as p2_height, "
+--      .. "ST_AsText(p1) as p1_str, ST_AsText(p2) as p2_str, "
       .. "ST_Distance(p1::geometry, p2::geometry, false) as length, "
       .. "total_length "
-    .. "from temp, srtm where ST_Intersects(rast, p1);"
+    .. "from temp, srtm as srtm1, srtm as srtm2 "
+      .. "where ST_Intersects(srtm1.rast, p1) and ST_Intersects(srtm2.rast, p2) ;"
+  local sqlquery = simplifyRequest and sqlqueryLight or sqlqueryFull
   
   print(sqlquery)
   local cursor = assert( sqlcon:execute(sqlquery) )
