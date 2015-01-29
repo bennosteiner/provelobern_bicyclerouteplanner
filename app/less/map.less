@@ -1,7 +1,7 @@
 @control-margin-right: 10px;
 
 .ol-zoom {
-  top: 66px;
+  top: 60px;
   right: @control-margin-right;
   left: auto;
 }
@@ -12,7 +12,7 @@
 }
 
 .ol-zoom-extent {
-  top: 178px;
+  top: 160px;
   right: @control-margin-right;
   left: auto;
 }
@@ -44,6 +44,11 @@
 }
 
 .ol-zoom.ol-control button {
+  line-height: 41px;
+}
+
+.ol-touch .ol-zoom.ol-control button,
+.ol-touch .ol-info.ol-control button{
   line-height: 47px;
 }
 
@@ -65,9 +70,9 @@
 
 .ol-control button {
     display:block;
-    width:50px;
-    height:50px;
-    line-height:50px;
+    width:44px;
+    height:44px;
+    line-height:44px;
     border: 2px solid #f5f5f5;
     border-radius: 50%;
     color:#f5f5f5;
@@ -75,8 +80,15 @@
     text-decoration:none;
     background: #464646;
     box-shadow: 0 0 3px gray;
-    font-size:20px;
+    font-size:18px;
     font-weight:bold;
+}
+
+.ol-touch .ol-control button {
+    width:50px;
+    height:50px;
+    line-height:50px;
+    font-size:20px;
 }
 
 .ol-control button:hover,
