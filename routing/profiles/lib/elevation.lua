@@ -69,7 +69,7 @@ local function compute_average_inclination_factors(segments)
   end
 end
 
-local simplifyRequest = false
+local simplifyRequest = true
 
 local function query_database(way_id)
   -- Splits the way in segments and compute lengths and elevations.
