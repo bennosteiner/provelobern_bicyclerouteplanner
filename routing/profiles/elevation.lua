@@ -202,6 +202,7 @@ function way_function (way)
   local foot = way.tags:Find("foot")
   local surface = way.tags:Find("surface")
   local bicycle = way.tags:Find("bicycle")
+  local bridge = way.tags:Find("bridge")
 
   -- name
   if "" ~= ref and "" ~= name then
@@ -379,8 +380,10 @@ function way_function (way)
 
   -- elevation
   -- limiting speed on each of the way segments would be more accurate
-  print('ID ' ..way.id..' XX')
-  Elevation.compute_speed( way )
+  -- print('ID ' ..way.id..' XX')
+  if "" == bridge then -- bridge are skipped from the elevation rule
+    Elevation.compute_speed( way )
+  end
 
   -- maxspeed
   MaxSpeed.limit( way, maxspeed, maxspeed_forward, maxspeed_backward )
