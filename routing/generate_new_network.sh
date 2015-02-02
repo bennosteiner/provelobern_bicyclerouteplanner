@@ -6,9 +6,8 @@
 # Then the osrm-routed daemons must be restarted.
 
 
-#PROFILES='upstream fast quiet ebike'
+PROFILES='fast quiet ebike'
 #PROFILES='upstream'
-PROFILES='upstream fast'
 OSMFILE=`ls *.osm.pbf |head -n 1 | sed 's/.pbf//'`
 NO_OSM_CLEAN=""
 if [ "X" = "X$OSMFILE" ]
