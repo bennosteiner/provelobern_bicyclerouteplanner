@@ -8,7 +8,7 @@
 
 #PROFILES='upstream fast quiet ebike'
 #PROFILES='upstream'
-PROFILES='elevation'
+PROFILES='upstream fast'
 OSMFILE=`ls *.osm.pbf |head -n 1 | sed 's/.pbf//'`
 NO_OSM_CLEAN=""
 if [ "X" = "X$OSMFILE" ]
@@ -32,7 +32,7 @@ fi
 set -o errexit
 
 cleanup() {
-  echo 'ERROR, cleaning up'
+  echo 'Cleaning up'
   rm -f /tmp/stxxl
 }
 trap "cleanup" INT TERM EXIT
@@ -86,3 +86,4 @@ do
 done
 
 
+echo "Generation and restart of $PROFILES succeeded"
