@@ -10,6 +10,12 @@
 #PROFILES='upstream'
 PROFILES='elevation'
 OSMFILE=`ls *.osm.pbf |head -n 1 | sed 's/.pbf//'`
+NO_OSM_CLEAN=""
+if [ "X" = "X$OSMFILE" ]
+then
+  OSMFILE=`ls *.osm`
+  NO_OSM_CLEAN="1"
+fi
 
 CHECK_DIR=`pwd | sed 's/.*\///' | head -c 2`
 if [ "X$CHECK_DIR" != "X20" ]
@@ -18,6 +24,10 @@ then
   exit 1
 fi
 
+if [ $# -ge 1 ]
+then
+  PROFILES="$*"
+fi
 
 set -o errexit
 
@@ -58,14 +68,15 @@ do
 done
 
 echo "Cleaning $OSMFILE and /tmp/stxxl"
-rm -f $OSMFILE
+[ -z "$NO_OSM_CLEAN" ] && rm -f $OSMFILE
 rm -f /tmp/stxxl
 
 echo "Updating production networks in /var/sig/osrm/"
-mkdir -p /var/sig/osrm/
 for profile in $PROFILES
 do
-	\cp -Rf $profile /var/sig/osrm/
+  mkdir -p /var/sig/osrm/$profile
+  \rm -rf /var/sig/osrm/$profile/*
+	\cp -Rf profiles/$profile.osrm* profiles/$profile.lua /var/sig/osrm/$profile/
 done
 
 echo "Restarting daemons for each profile"
