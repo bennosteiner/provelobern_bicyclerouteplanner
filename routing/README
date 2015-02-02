@@ -17,15 +17,6 @@
 ../generate_new_network.sh
 
 
-5. Testing
-
-
-
-6. Switching databases
-Ideally, next production data should be prepared and tested first.
-Then new data should be used as production and old one kept as backup.
-
-
 
 ----- Useful commands and notes -----
 Extract Bern area  osmosis  --read-xml enableDateParsing=no file=swiss/switzerland-padded.osm  --bounding-box top=47 left=7.2 bottom=46.9 right=7.6 --write-xml file=swiss_extract.osm
