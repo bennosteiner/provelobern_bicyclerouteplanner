@@ -395,9 +395,15 @@ end
 function turn_function (angle)
   -- compute turn penalty as angle^2, with a left/right bias
   k = turn_penalty/(90.0*90.0)
+
+  -- check if going strait (or nearly straigt) -> apply smallest turn penalty
+  -- 0.1rad is about 5.7°
+
   if angle>=0 then
+    if angle <= 0.1 then angle = 0.1 end
     return angle*angle*k/turn_bias
   else
+    if angle >= -0.1 then angle = -0.1 end
     return angle*angle*k*turn_bias
   end
 end
