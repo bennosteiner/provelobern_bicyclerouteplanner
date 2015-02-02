@@ -55,14 +55,14 @@ local function compute_average_inclination_factors(segments)
     local inclination = compute_inclination(s.p1_height, s.p2_height, s.length)
     local fwdFactor = get_inclination_factor(inclination)
     local bwdFactor = get_inclination_factor(0.0 - inclination)
-    print('Inclination ' .. inclination .. ' (' .. s.p2_height .. ' - ' .. s.p1_height .. ') / ' .. s.length .. ' [ -> ' .. fwdFactor .. ', <- ' .. bwdFactor .. ']')
+--    print('Inclination ' .. inclination .. ' (' .. s.p2_height .. ' - ' .. s.p1_height .. ') / ' .. s.length .. ' [ -> ' .. fwdFactor .. ', <- ' .. bwdFactor .. ']')
     forward = forward + s.length * fwdFactor
     backward = backward + s.length * bwdFactor
   end
 
   if count > 0 then
     local totalLength = segments[1].total
-    print('fb' .. forward .. ' ' .. backward .. ' / ' .. totalLength)
+--    print('fb' .. forward .. ' ' .. backward .. ' / ' .. totalLength)
     return { forward = forward / totalLength, backward = backward / totalLength }
   else
     return { forward = 1.0, backward = 1.0 }
@@ -105,12 +105,12 @@ local function query_database(way_id)
       .. "where ST_Intersects(srtm1.rast, p1) and ST_Intersects(srtm2.rast, p2) ;"
   local sqlquery = simplifyRequest and sqlqueryLight or sqlqueryFull
   
-  print(sqlquery)
+--  print(sqlquery)
   local cursor = assert( sqlcon:execute(sqlquery) )
   
   local segments = {}
   local count = cursor:numrows();
-  print ("Way " .. way_id .. " has " .. count .. " segments")
+--  print ("Way " .. way_id .. " has " .. count .. " segments")
   local row = cursor:fetch( {}, "a")
   while row do
     -- Handle corner cases where some height is missing
@@ -123,7 +123,7 @@ local function query_database(way_id)
       h2 = 0
     end
 
-    print(string.format("-> (%s - %s) %s / %s", h1, h2, row.length, row.total_length))
+--    print(string.format("-> (%s - %s) %s / %s", h1, h2, row.length, row.total_length))
     table.insert(segments, {
       p1_height = tonumber(h1),
       p2_height = tonumber(h2),
@@ -143,7 +143,7 @@ function compute_speed(way)
 
   local segments = query_database(way.id)
   local factors = compute_average_inclination_factors(segments)
-  print(string.format("%f, %f", factors.forward, factors.backward))
+--  print(string.format("%f, %f", factors.forward, factors.backward))
   way.forward_speed = way.forward_speed * factors.forward
   way.backward_speed = way.backward_speed * factors.backward
 end
