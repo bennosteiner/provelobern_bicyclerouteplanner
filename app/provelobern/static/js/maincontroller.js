@@ -152,9 +152,12 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
       new ol.layer.Tile({
         source: new ol.source.OSM({
           // url: 'http://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png',
+          // url:
+          //     'http://tile{0-9}-osm-ch.provelobern-geomapfish.prod.sig' +
+          //     '.cloud.camptocamp.net/osm-swiss-style/{z}/{x}/{y}.png',
           url:
               'http://tile{0-9}-osm-ch.provelobern-geomapfish.prod.sig' +
-              '.cloud.camptocamp.net/osm-swiss-style/{z}/{x}/{y}.png',
+              '.cloud.camptocamp.net/switzerland/{z}/{x}/{y}.png',
           crossOrigin: null,
           attributions: [
             new ol.Attribution({
