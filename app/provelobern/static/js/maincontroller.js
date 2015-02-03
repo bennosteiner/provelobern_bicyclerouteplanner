@@ -214,7 +214,7 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     }, this);
   }
 
-  this.map_.on('click', this.handleMapClick_, this);
+  this.map_.on('singleclick', this.handleMapClick_, this);
 
   this['map'] = this.map_;
 
