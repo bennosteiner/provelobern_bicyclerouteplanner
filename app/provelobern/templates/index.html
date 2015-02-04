@@ -16,11 +16,13 @@
     <link rel="stylesheet" href="${request.static_url('provelobern:static/build/build.css')}" type="text/css">
     <script src="${request.static_url('%s/jquery/dist/jquery.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.js' % node_modules_path)}"></script>
+    <script src="node_modules/typeahead.js/dist/typeahead.bundle.js"></script>
 % else:
     <link rel="stylesheet" href="${request.static_url('%s/bootstrap/dist/css/bootstrap.min.css' % node_modules_path)}" type="text/css">
     <link rel="stylesheet" href="${request.static_url('provelobern:static/build/build.min.css')}" type="text/css">
     <script src="${request.static_url('%s/jquery/dist/jquery.min.js' % node_modules_path)}"></script>
     <script src="${request.static_url('%s/angular/angular.min.js' % node_modules_path)}"></script>
+    <script src="node_modules/typeahead.js/dist/typeahead.bundle.min.js"></script>
 % endif
   </head>
   <body>
@@ -38,11 +40,13 @@
           <div class="search-fields">
             <div class="input-group">
               <span class="input-group-addon">A</span>
-              <input type="text" class="form-control input-sm" placeholder="{{'From'|translate}}">
+              <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, 'start')"
+                  ng-model="ctrl.startText" type="text" class="form-control input-sm" placeholder="{{'From'|translate}}">
             </div>
             <div class="input-group">
               <span class="input-group-addon">B</span>
-              <input type="text" class="form-control input-sm" placeholder="{{'To'|translate}}">
+              <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, 'target')"
+                  ng-model="ctrl.targetText" type="text" class="form-control input-sm" placeholder="{{'To'|translate}}">
             </div>
             <div ngeo-btn-group class="routing-type btn-group">
               <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.fast"

@@ -4,6 +4,7 @@ goog.require('app');
 goog.require('app.Drag');
 goog.require('app.GeoLocateControl');
 goog.require('app.InfoControl');
+goog.require('app.searchDirective');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.i18n.NumberFormat');
@@ -140,6 +141,7 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     layerFilterThis: this
   });
   dragInteraction.on(app.Drag.FEATUREDRAGEND, function(evt) {
+    this.updateInputText_(evt.feature);
     this.updateRoute();
   }, this);
 
@@ -155,9 +157,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
           // url:
           //     'http://tile{0-9}-osm-ch.provelobern-geomapfish.prod.sig' +
           //     '.cloud.camptocamp.net/osm-swiss-style/{z}/{x}/{y}.png',
+          // url: 'http://tile.osm.ch/switzerland/{z}/{x}/{y}.png',
           url:
               'http://tile{0-9}-osm-ch.provelobern-geomapfish.prod.sig' +
               '.cloud.camptocamp.net/switzerland/{z}/{x}/{y}.png',
+          // url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
           crossOrigin: null,
           attributions: [
             new ol.Attribution({
@@ -233,6 +237,8 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     'ebike': false
   };
   this['status'] = '';
+  this['startText'] = '';
+  this['targetText'] = '';
 };
 
 
@@ -257,8 +263,10 @@ app.MainController.prototype.switchLanguage = function(lang) {
 app.MainController.prototype.handleMapClick_ = function(event) {
   if (this.startFeature_ === null) {
     this.setStartCoordinate_(this.map_.getCoordinateFromPixel(event.pixel));
+    this.updateInputText_(this.startFeature_);
   } else if (this.targetFeature_ === null) {
     this.setTargetCoordinate_(this.map_.getCoordinateFromPixel(event.pixel));
+    this.updateInputText_(this.targetFeature_);
   }
   // else ignore
 };
@@ -269,12 +277,16 @@ app.MainController.prototype.handleMapClick_ = function(event) {
  * @private
  */
 app.MainController.prototype.setStartCoordinate_ = function(coord) {
+  if (this.startFeature_ !== null) {
+    this.vectorSource_.removeFeature(this.startFeature_);
+  }
   var feature = new ol.Feature({
     geometry: new ol.geom.Point(coord),
     start: true
   });
   this.startFeature_ = feature;
   this.vectorSource_.addFeature(feature);
+  this.updateRoute();
 };
 
 
@@ -283,13 +295,16 @@ app.MainController.prototype.setStartCoordinate_ = function(coord) {
  * @private
  */
 app.MainController.prototype.setTargetCoordinate_ = function(coord) {
+  if (this.targetFeature_ !== null) {
+    this.vectorSource_.removeFeature(this.targetFeature_);
+  }
   var feature = new ol.Feature({
     geometry: new ol.geom.Point(coord),
     start: false
   });
   this.targetFeature_ = feature;
   this.vectorSource_.addFeature(feature);
-  this.requestRoute_();
+  this.updateRoute();
 };
 
 
@@ -297,10 +312,47 @@ app.MainController.prototype.setTargetCoordinate_ = function(coord) {
  * @export
  */
 app.MainController.prototype.updateRoute = function() {
+  this.routeSource_.clear();
   if (this.startFeature_ === null || this.targetFeature_ === null) {
     return;
   }
   this.requestRoute_();
+};
+
+
+/**
+ * @param {ol.Feature} feature The feature that has changed.
+ * @private
+ */
+app.MainController.prototype.updateInputText_ = function(feature) {
+  var geometry = feature.getGeometry();
+  goog.asserts.assert(goog.isDef(geometry));
+  if (feature === this.startFeature_) {
+    this['startText'] = this.formatCoordinate_(geometry);
+  } else if (feature === this.targetFeature_) {
+    this['targetText'] = this.formatCoordinate_(geometry);
+  }
+  this['scope'].$apply();
+};
+
+
+/**
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @return {string} Reprojected and formatted coordinate.
+ * @private
+ */
+app.MainController.prototype.formatCoordinate_ = function(geometry) {
+  geometry = geometry.clone().transform('EPSG:3857', 'EPSG:4326');
+  var point = /** @type {ol.geom.Point} */ (geometry);
+  var coord = point.getCoordinates();
+
+  goog.i18n.NumberFormatSymbols = goog.i18n.NumberFormatSymbols_en;
+  var fmt = new goog.i18n.NumberFormat(
+      goog.i18n.NumberFormat.Format.DECIMAL);
+  fmt.setMaximumFractionDigits(6);
+  fmt.setShowTrailingZeros(true);
+
+  return fmt.format(coord[0]) + ', ' + fmt.format(coord[1]);
 };
 
 
@@ -338,7 +390,6 @@ app.MainController.prototype.requestRoute_ = function() {
     .replace('{to}', to[1] + ',' + to[0])
     .replace('{zoom}', '20');
 
-  this.routeSource_.clear();
   goog.net.XhrIo.send(url, goog.bind(function(e) {
     var xhr = /** @type {goog.net.XhrIo} */ (e.target);
     if (!xhr.isSuccess()) {
@@ -363,6 +414,20 @@ app.MainController.prototype.requestRoute_ = function() {
     this['scope'].$apply();
   }, this));
 
+};
+
+
+/**
+ * @param {ol.geom.Point} location
+ * @param {string} type
+ * @export
+ */
+app.MainController.prototype.onSearchSelection = function(location, type) {
+  if (type === 'start') {
+    this.setStartCoordinate_(location.getCoordinates());
+  } else {
+    this.setTargetCoordinate_(location.getCoordinates());
+  }
 };
 
 app.module.controller('MainController', app.MainController);
