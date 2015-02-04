@@ -190,7 +190,8 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
       maxZoom: 19
     }),
     controls: ol.control.defaults({
-      attribution: false
+      attribution: false,
+      zoom: false
     }).extend([
       this.attribution_,
       new app.GeoLocateControl({
@@ -204,6 +205,15 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
             extent: this.extentBern_,
             label: goog.dom.htmlToDocumentFragment(
                 '<span class="glyphicon glyphicon-fullscreen" ' +
+                'aria-hidden="true"></span>')
+          })),
+      new ol.control.Zoom(
+          /** @type {olx.control.ZoomOptions} */ ({
+            zoomInLabel: goog.dom.htmlToDocumentFragment(
+                '<span class="glyphicon glyphicon-plus" ' +
+                'aria-hidden="true"></span>'),
+            zoomOutLabel: goog.dom.htmlToDocumentFragment(
+                '<span class="glyphicon glyphicon-minus" ' +
                 'aria-hidden="true"></span>')
           }))
     ]),
