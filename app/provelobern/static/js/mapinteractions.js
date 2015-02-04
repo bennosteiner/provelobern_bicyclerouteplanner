@@ -125,12 +125,35 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
  */
 app.Drag.prototype.handleUpEvent = function(evt) {
   if (this.feature_ !== null) {
-    this.dispatchEvent(new goog.events.Event(app.Drag.FEATUREDRAGEND));
+    this.dispatchEvent(
+        new app.Drag.DragEvent(app.Drag.FEATUREDRAGEND, this.feature_));
   }
   this.coordinate_ = null;
   this.feature_ = null;
   return false;
 };
+
+
+
+/**
+ * @constructor
+ * @extends {goog.events.Event}
+ * @param {string} type Type.
+ * @param {ol.Feature} feature Feature.
+ * @param {Object=} opt_target Target.
+ */
+app.Drag.DragEvent = function(type, feature, opt_target) {
+
+  goog.base(this, type, opt_target);
+
+  /**
+   * The feature that was dragged.
+   * @type {ol.Feature}
+   */
+  this.feature = feature;
+
+};
+goog.inherits(app.Drag.DragEvent, goog.events.Event);
 
 
 /**
