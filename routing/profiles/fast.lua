@@ -65,23 +65,18 @@ route_speeds = {
   ["ferry"] = 5
 }
 
-surface_speeds = {
-  ["asphalt"] = default_speed,
-  ["cobblestone:flattened"] = 10,
-  ["paving_stones"] = 10,
-  ["compacted"] = 10,
-  ["cobblestone"] = 6,
-  ["unpaved"] = 6,
-  ["fine_gravel"] = 6,
-  ["gravel"] = 6,
-  ["fine_gravel"] = 6,
-  ["pebbelstone"] = 6,
-  ["ground"] = 6,
-  ["dirt"] = 6,
-  ["earth"] = 6,
-  ["grass"] = 6,
-  ["mud"] = 3,
-  ["sand"] = 3
+surface_penalties = { 
+    ["gravel"] = 0.8,
+    ["ground"] = 0.8,
+    ["unpaved"] = 0.9,
+    ["grass"] = 0.5,
+    ["dirt"] = 0.5,
+    ["cobblestone"] = 0.5, 
+    ["pebblestone"] = 0.9, 
+    ["compacted"] = 0.9, 
+    ["wood"] = 0.95,
+    ["grit"] = 0.6,
+    ["sand"] = 0.4
 }
 
 take_minimum_of_speeds  = true
@@ -365,13 +360,13 @@ function way_function (way)
 
   -- surfaces
   if surface then
-    surface_speed = surface_speeds[surface]
+    surface_speed = surface_penalties[surface]
     if surface_speed then
       if way.forward_speed > 0 then
-        way.forward_speed = surface_speed
+      	way.forward_speed = math.floor(way.forward_speed * surface_speed)
       end
       if way.backward_speed > 0 then
-        way.backward_speed  = surface_speed
+        way.backward_speed = math.floor(way.backward_speed * surface_speed)
       end
     end
   end
