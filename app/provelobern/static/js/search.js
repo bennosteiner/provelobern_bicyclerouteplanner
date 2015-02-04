@@ -39,7 +39,7 @@ app.SearchController = function($scope, $element, gettextCatalog) {
   this.nominatim_ = new Bloodhound(/** @type {BloodhoundOptions} */({
     limit: this.limit_,
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('display_name'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('label'),
     remote: {
       url: 'http://nominatim.openstreetmap.org/search',
       rateLimitWait: 300,
@@ -51,10 +51,31 @@ app.SearchController = function($scope, $element, gettextCatalog) {
         }
         return url +
                '?q=' + encodeURIComponent(query) +
-                '&format=jsonv2&polygon=0&addressdetails=0' +
+                '&format=jsonv2&polygon=0&addressdetails=1' +
                 '&accept-language=' + gettextCatalog.currentLanguage +
                 '&countrycodes=ch' +
                 '&limit=' + app.SearchController.LIMIT;
+      },
+      filter: function(resp) {
+        // we are not using the provided `display_name` field because it is too
+        // verboose. instead we build a custom label from the address details
+        // ignoring some of the address fields.
+        var blacklist = [
+              'county', 'state_district', 'country', 'country_code'];
+
+        var datums = /** @type {Array.<BloodhoundDatum>} */ (resp);
+        return datums.map(function(datum) {
+          var addressKeys = goog.object.getKeys(datum['address']);
+          var addressDetails = [];
+          goog.array.forEach(addressKeys, function(key) {
+            if (!goog.array.contains(blacklist, key)) {
+              addressDetails.push(datum['address'][key]);
+            }
+          });
+          datum['label'] = addressDetails.join(', ');
+
+          return datum;
+        });
       }
     }
   }));
@@ -71,7 +92,7 @@ app.SearchController = function($scope, $element, gettextCatalog) {
     source: this.createSearchCoordinates_()
   }, {
     name: 'nominatim',
-    displayKey: 'display_name',
+    displayKey: 'label',
     source: this.nominatim_.ttAdapter(),
     templates: {
       'empty': '<span class="tt-no-result"><p>No result</p></span>'
