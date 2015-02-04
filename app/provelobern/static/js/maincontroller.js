@@ -186,7 +186,8 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     ],
     view: new ol.View({
       center: ol.proj.transform([8.415, 47.027], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 10
+      zoom: 10,
+      maxZoom: 19
     }),
     controls: ol.control.defaults({
       attribution: false
