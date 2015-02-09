@@ -40,7 +40,7 @@ local function compute_inclination(h1, h2, length)
   if (length == 0) then
     return 0.0 -- no inclination
   else
-    return (h1 - h2) / length
+    return (h2 - h1) / length
   end
 end
 
