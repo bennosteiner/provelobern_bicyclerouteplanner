@@ -66,9 +66,8 @@ do
 	cd ..
 done
 
-echo "Cleaning $OSMFILE and /tmp/stxxl"
+echo "Cleaning $OSMFILE"
 [ -z "$NO_OSM_CLEAN" ] && rm -f $OSMFILE
-rm -f /tmp/stxxl
 
 echo "Updating production networks in /var/sig/osrm/"
 for profile in $PROFILES
