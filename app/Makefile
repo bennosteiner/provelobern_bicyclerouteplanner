@@ -72,7 +72,7 @@ update-node-modules:
 provelobern/closure/%.py: $(CLOSURE_LIBRARY_PATH)/closure/bin/build/%.py
 	cp $< $@
 
-provelobern/locale/provelobern-client.pot: $(APP_HTML_FILES)
+provelobern/locale/provelobern-client.pot: $(APP_HTML_FILES) $(APP_JS_FILES)
 	node tasks/extract-messages.js $^ > $@
 
 provelobern/locale/de/LC_MESSAGES/provelobern-client.po: provelobern/locale/provelobern-client.pot

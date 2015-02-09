@@ -42,6 +42,10 @@ msgstr "Von"
 msgid "Imprint"
 msgstr "Impressum"
 
+#: provelobern/static/js/search.js
+msgid "No address found"
+msgstr "Keine Adresse gefunden"
+
 #: provelobern/templates/index.html
 msgid "No route found between the two given positions."
 msgstr "Es konnte keine Route zwischen den zwei Positionen ermittelt werden."

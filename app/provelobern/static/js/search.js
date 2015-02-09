@@ -96,7 +96,10 @@ app.SearchController = function($scope, $element, gettextCatalog) {
     displayKey: 'label',
     source: this.nominatim_.ttAdapter(),
     templates: {
-      'empty': '<span class="tt-no-result"><p>No result</p></span>'
+      'empty': function() {
+        return '<span class="tt-no-result"><p>' +
+            gettextCatalog.getString('No address found') + '</p></span>';
+      }
     }
   });
 
