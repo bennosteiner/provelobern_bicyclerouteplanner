@@ -18,6 +18,7 @@
       "node_modules/openlayers/externs/topojson.js",
       "node_modules/openlayers/externs/vbarray.js",
       "node_modules/ngeo/externs/angular-gettext.js",
+      "node_modules/ngeo/externs/angular-local-storage.js",
       "node_modules/ngeo/externs/twbootstrap.js",
       "node_modules/ngeo/externs/closure-compiler.js",
       "node_modules/closure-externs/externs/bloodhound.js",
