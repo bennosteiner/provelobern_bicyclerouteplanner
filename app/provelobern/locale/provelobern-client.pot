@@ -12,6 +12,10 @@ msgid "Bicycle Route Planner | Pro Velo Bern"
 msgstr ""
 
 #: provelobern/templates/index.html
+msgid "Cancel"
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid "Direct"
 msgstr ""
 
@@ -48,11 +52,31 @@ msgid "Optimized"
 msgstr ""
 
 #: provelobern/templates/index.html
+msgid "Save"
+msgstr ""
+
+#: provelobern/templates/index.html
+msgid "Save as favorite"
+msgstr ""
+
+#: provelobern/templates/index.html
+msgid "Saving as..."
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid ""
 "The bicycle route planner by <a href=\"http://www.provelobern.ch/\" target=\"_blank\">Pro Velo Bern</a> and\n"
 "              the city of <a href=\"http://www.bern.ch/\" target=\"_blank\">Bern</a> is based on OpenStreetMap data."
 msgstr ""
 
 #: provelobern/templates/index.html
+msgid "The position is stored locally in the browser."
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid "To"
+msgstr ""
+
+#: provelobern/templates/index.html
+msgid "e.g. Home, Work, ..."
 msgstr ""
