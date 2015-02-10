@@ -118,10 +118,29 @@ html, body, #map {
   .input-group input {
     margin-left: 10px;
     width: 220px;
+    padding-right: 25px;
   }
 
   .input-group {
     margin-top: 6px;
+  }
+
+  .input-addon {
+    position: relative;
+  }
+
+  .input-star {
+    position: absolute;
+    right: -5px;
+    z-index: 10;
+    top: 6px;
+
+    &:visited, &:link {
+      color: #464646;
+    }
+    &:hover, &:active {
+      color: #828282;
+    }
   }
 
   .routing-type {
@@ -137,6 +156,39 @@ html, body, #map {
   .routing-type .btn-primary.active {
     background-color: #828282;
     border-color: #828282;
+  }
+}
+
+.favorites-panel {
+  display: none;
+  padding: 5px;
+  margin-top: 10px;
+
+  .favorites-controls {
+    text-align: right;
+
+    .favorites-hint {
+      font-size: 9px;
+      width: 120px;
+      display: block;
+      float: left;
+      text-align: left;
+      .glyphicon {
+        font-size: 14px;
+        color: #828282;
+      }
+    }
+  }
+
+  a {
+    font-size: 12px;
+    margin-right: 5px;
+    &:visited, &:link {
+      color: #464646;
+    }
+    &:hover, &:active {
+      color: #828282;
+    }
   }
 }
 
@@ -157,4 +209,25 @@ html, body, #map {
   text-align: center;
   font-weight: bold;
   color: #964512;
+}
+
+.saving-favorite-a, .saving-favorite-b {
+  .routing-type, .routeResults, .routeError, .routeInvalid {
+    display: none;
+  }
+  .favorites-panel {
+    display: block;
+  }
+}
+
+.saving-favorite-a {
+  .input-b {
+    display: none;
+  }
+}
+
+.saving-favorite-b {
+  .input-a {
+    display: none;
+  }
 }

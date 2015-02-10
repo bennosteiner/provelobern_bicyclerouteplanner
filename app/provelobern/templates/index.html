@@ -32,21 +32,36 @@
           <img src="${request.static_url('provelobern:static/img/logo-provelobern.png')}" height="60"/>
           <img src="${request.static_url('provelobern:static/img/logo-bern.png')}" height="60" />
         </div>
-        <div id="pulldown-content" class="content in">
+        <div id="pulldown-content" class="content in"
+            ng-class="{'saving-favorite-b': ctrl.favorites.saving == 'b', 'saving-favorite-a': ctrl.favorites.saving == 'a'}">
           <div class="languages">
             <a href="" ng-class="{'active-language': ctrl.lang == 'de'}" ng-click="ctrl.switchLanguage('de')">DE</a>
             <a href="" ng-class="{'active-language': ctrl.lang == 'en'}" ng-click="ctrl.switchLanguage('en')">EN</a>
           </div>
           <div class="search-fields">
-            <div class="input-group">
+            <div class="input-group input-a">
               <span class="input-group-addon">A</span>
-              <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, 'start')"
-                  ng-model="ctrl.startText" type="text" class="form-control input-sm" placeholder="{{'From'|translate}}">
+              <div class="input-addon">
+                <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, item, 'start')"
+                    ng-model="ctrl.startText" type="text" class="form-control input-sm" placeholder="{{'From'|translate}}">
+                <a class="input-star" href="#" title="{{'Save as favorite'|translate}}"
+                    ng-show="ctrl.favorites.activeA" ng-click="ctrl.showSaveFavorite('a')">
+                  <span class="glyphicon" aria-hidden="true"
+                    ng-class="{'glyphicon-star-empty': ctrl.favorites.nameA == '', 'glyphicon-star': ctrl.favorites.nameA != ''}"></span>
+                </a>
+              </div>
             </div>
-            <div class="input-group">
+            <div class="input-group input-b">
               <span class="input-group-addon">B</span>
-              <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, 'target')"
-                  ng-model="ctrl.targetText" type="text" class="form-control input-sm" placeholder="{{'To'|translate}}">
+              <div class="input-addon">
+                <input app-search app-map="ctrl.map" app-search-onselect="ctrl.onSearchSelection(location, item, 'target')"
+                    ng-model="ctrl.targetText" type="text" class="form-control input-sm" placeholder="{{'To'|translate}}">
+                <a class="input-star" href="#" title="{{'Save as favorite'|translate}}"
+                    ng-show="ctrl.favorites.activeB" ng-click="ctrl.showSaveFavorite('b')">
+                  <span class="glyphicon" aria-hidden="true"
+                    ng-class="{'glyphicon-star-empty': ctrl.favorites.nameB == '', 'glyphicon-star': ctrl.favorites.nameB != ''}"></span>
+                </a>
+              </div>
             </div>
             <div ngeo-btn-group class="routing-type btn-group">
               <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.fast"
@@ -55,6 +70,22 @@
                 ng-click="ctrl.updateRoute()">{{'Optimized'|translate}}</button>
               <button ngeo-btn class="btn btn-primary btn-sm" ng-model="ctrl.profile.ebike"
                 ng-click="ctrl.updateRoute()">{{'E-Bike'|translate}}</button>
+            </div>
+            <div class="favorites-panel">
+              <div class="form-group" ng-class="{'has-error': ctrl.favorites.error}">
+                <label for="favoriteName">{{'Saving as...'|translate}}</label>
+                <input type="text" class="form-control input-sm" id="favoriteName"
+                  placeholder="{{'e.g. Home, Work, ...'|translate}}" ng-model="ctrl.favorites.currentName">
+              </div>
+              <div class="favorites-controls">
+                <span class="favorites-hint">
+                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                  {{'The position is stored locally in the browser.'|translate}}
+                </span>
+                <a href="#" ng-click="ctrl.cancelSavingFavorite()">{{'Cancel'|translate}}</a>
+                <input class="btn btn-default btn-sm" type="button" value="{{'Save'|translate}}"
+                  ng-click="ctrl.saveFavorite()">
+              </div>
             </div>
           </div>
           <div ng-show="ctrl.status == 'route'" class="routeResults">
@@ -108,12 +139,14 @@
 
 % if debug:
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.js' % node_modules_path)}"></script>
+    <script src="node_modules/angular-local-storage/dist/angular-local-storage.js"></script>
     <script src="${request.static_url('%s/closure/goog/base.js' % closure_library_path)}"></script>
     <script src="${request.route_url('deps.js')}"></script>
     <script src="${request.static_url('provelobern:static/js/main.js')}"></script>
     <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.js' % node_modules_path)}"></script>
 % else:
     <script src="${request.static_url('%s/angular-gettext/dist/angular-gettext.min.js' % node_modules_path)}"></script>
+    <script src="node_modules/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script src="${request.static_url('provelobern:static/build/build.js')}"></script>
     <script src="${request.static_url('%s/bootstrap/dist/js/bootstrap.min.js' % node_modules_path)}"></script>
 % endif

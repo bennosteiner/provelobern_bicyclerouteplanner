@@ -10,10 +10,13 @@ goog.require('ol.geom.Point');
  * @param {angular.Scope} $scope Scope.
  * @param {angular.JQLite} $element
  * @param {angularGettext.Catalog} gettextCatalog Gettext catalog.
+ * @param {angularLocalStorage.localStorageService} localStorageService
+ *        LocalStorage service.
  * @ngInject
  * @export
  */
-app.SearchController = function($scope, $element, gettextCatalog) {
+app.SearchController = function($scope, $element, gettextCatalog,
+    localStorageService) {
 
   /**
    * @type {angularGettext.Catalog}
@@ -31,6 +34,11 @@ app.SearchController = function($scope, $element, gettextCatalog) {
    * @private
    */
   this.limit_ = app.SearchController.LIMIT;
+
+  /**
+   * @private
+   */
+  this.favorites_ = new app.Favorites(localStorageService);
 
   /**
    * @type {Bloodhound}
@@ -82,6 +90,19 @@ app.SearchController = function($scope, $element, gettextCatalog) {
   }));
   this.nominatim_.initialize();
 
+  /**
+   * @type {Bloodhound}
+   * @private
+   */
+  this.favoritesSource_ = new Bloodhound(/** @type {BloodhoundOptions} */({
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    local: goog.bind(function() {
+      return this.favorites_.getFavorites();
+    }, this)
+  }));
+  this.favoritesSource_.initialize();
+
   var view = this.map_.getView();
 
   $element.typeahead({
@@ -91,6 +112,24 @@ app.SearchController = function($scope, $element, gettextCatalog) {
     name: 'coordinates',
     displayKey: 'label',
     source: this.createSearchCoordinates_()
+  }, {
+    name: 'favorites',
+    displayKey: 'label',
+    source: goog.bind(function(query, cb) {
+      this.favoritesSource_.clear();
+      this.favoritesSource_.initialize(true);
+      this.favoritesSource_.get(query, function(suggestions) {
+        cb(suggestions);
+      });
+    }, this),
+    templates: {
+      'suggestion': function(favorite) {
+        return '<p><span class="glyphicon glyphicon-star"' +
+            ' aria-hidden="true"></span> ' +
+            favorite['name'] + '<br>' + favorite['label'] +
+            '</p>';
+      }
+    }
   }, {
     name: 'nominatim',
     displayKey: 'label',
@@ -106,7 +145,7 @@ app.SearchController = function($scope, $element, gettextCatalog) {
   $element.on('typeahead:selected', goog.bind(function(event, datum, dataset) {
     $(event.target).focus();
     var geometry = this.getGeometry_(datum);
-    $scope['onSelect']({'location': geometry});
+    $scope['onSelect']({'location': geometry, 'item': datum});
 
     view.setCenter(geometry.getCoordinates());
     view.setZoom(15);
@@ -126,9 +165,9 @@ app.SearchController.prototype.createSearchCoordinates_ = function() {
     var coordinate = app.SearchController.matchCoordinate(query);
     if (coordinate !== null) {
       suggestions.push({
-        label: query,
-        lon: coordinate[0],
-        lat: coordinate[1]
+        'label': query,
+        'lon': coordinate[0],
+        'lat': coordinate[1]
       });
     }
     callback(suggestions);
@@ -142,13 +181,12 @@ app.SearchController.prototype.createSearchCoordinates_ = function() {
  * @return {ol.geom.Point}
 */
 app.SearchController.prototype.getGeometry_ = function(datum) {
-  if (datum.geometry) {
-    return datum.geometry;
+  if (!goog.isDef(datum['geometry'])) {
+    datum['geometry'] = new ol.geom.Point(ol.proj.transform(
+        [parseFloat(datum['lon']), parseFloat(datum['lat'])],
+        'EPSG:4326', 'EPSG:3857'));
   }
-  datum.geometry = new ol.geom.Point(ol.proj.transform(
-      [parseFloat(datum['lon']), parseFloat(datum['lat'])],
-      'EPSG:4326', 'EPSG:3857'));
-  return datum.geometry;
+  return /** @type {ol.geom.Point} */ (datum['geometry']);
 };
 
 

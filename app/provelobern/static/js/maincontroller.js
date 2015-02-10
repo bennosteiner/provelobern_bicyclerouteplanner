@@ -2,6 +2,7 @@ goog.provide('app.MainController');
 
 goog.require('app');
 goog.require('app.Drag');
+goog.require('app.Favorites');
 goog.require('app.GeoLocateControl');
 goog.require('app.InfoControl');
 goog.require('app.searchDirective');
@@ -41,12 +42,14 @@ goog.require('ol.style.Style');
  * @param {ngeo.GetBrowserLanguage} ngeoGetBrowserLanguage
  *        GetBrowserLanguage Service.
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
+ * @param {angularLocalStorage.localStorageService} localStorageService
+ *        LocalStorage service.
  * @constructor
  * @export
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, langUrlTemplate,
-    ngeoGetBrowserLanguage, ngeoLocation) {
+    ngeoGetBrowserLanguage, ngeoLocation, localStorageService) {
 
   this['scope'] = $scope;
 
@@ -66,6 +69,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
    * @private
    */
   this.langUrlTemplate_ = langUrlTemplate;
+
+  /**
+   * @private
+   */
+  this.favorites_ = new app.Favorites(localStorageService);
 
   /**
    * @type {ol.Extent}
@@ -249,7 +257,19 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
   };
   this['status'] = '';
   this['startText'] = '';
+  this.startLabel = '';
   this['targetText'] = '';
+  this.targetLabel = '';
+
+  this['favorites'] = {
+    'saving': '',
+    'currentName': '',
+    'error': false,
+    'activeA': false,
+    'activeB': false,
+    'nameA': '',
+    'nameB': ''
+  };
 };
 
 
@@ -298,6 +318,7 @@ app.MainController.prototype.setStartCoordinate_ = function(coord) {
   this.startFeature_ = feature;
   this.vectorSource_.addFeature(feature);
   this.updateRoute();
+  this['favorites']['activeA'] = true;
 };
 
 
@@ -316,6 +337,7 @@ app.MainController.prototype.setTargetCoordinate_ = function(coord) {
   this.targetFeature_ = feature;
   this.vectorSource_.addFeature(feature);
   this.updateRoute();
+  this['favorites']['activeB'] = true;
 };
 
 
@@ -338,10 +360,18 @@ app.MainController.prototype.updateRoute = function() {
 app.MainController.prototype.updateInputText_ = function(feature) {
   var geometry = feature.getGeometry();
   goog.asserts.assert(goog.isDef(geometry));
+
+  var label;
   if (feature === this.startFeature_) {
-    this['startText'] = this.formatCoordinate_(geometry);
+    label = this.formatCoordinate_(geometry);
+    this['startText'] = label;
+    this.startLabel = label;
+    this['favorites']['nameA'] = '';
   } else if (feature === this.targetFeature_) {
-    this['targetText'] = this.formatCoordinate_(geometry);
+    label = this.formatCoordinate_(geometry);
+    this['targetText'] = label;
+    this.targetLabel = label;
+    this['favorites']['nameB'] = '';
   }
   this['scope'].$apply();
 };
@@ -430,15 +460,82 @@ app.MainController.prototype.requestRoute_ = function() {
 
 /**
  * @param {ol.geom.Point} location
+ * @param {Object} item
  * @param {string} type
  * @export
  */
-app.MainController.prototype.onSearchSelection = function(location, type) {
+app.MainController.prototype.onSearchSelection =
+    function(location, item, type) {
   if (type === 'start') {
     this.setStartCoordinate_(location.getCoordinates());
+    this.startLabel = item['label'];
+    if (goog.isDef(item['type']) && item['type'] === 'favorite') {
+      this['favorites']['nameA'] = item['name'];
+    } else {
+      this['favorites']['nameA'] = '';
+    }
   } else {
     this.setTargetCoordinate_(location.getCoordinates());
+    this.targetLabel = item['label'];
+    if (goog.isDef(item['type']) && item['type'] === 'favorite') {
+      this['favorites']['nameB'] = item['name'];
+    } else {
+      this['favorites']['nameB'] = '';
+    }
   }
+  this['scope'].$apply();
+};
+
+
+/**
+ * @param {string} type Saving address 'a' or 'b'.
+ * @export
+ */
+app.MainController.prototype.showSaveFavorite = function(type) {
+  this['favorites']['saving'] = type;
+  this['favorites']['error'] = false;
+  this['favorites']['currentName'] = '';
+  if (type === 'a') {
+    this['favorites']['currentName'] = this['favorites']['nameA'];
+  } else {
+    this['favorites']['currentName'] = this['favorites']['nameB'];
+  }
+};
+
+
+/**
+ * @export
+ */
+app.MainController.prototype.saveFavorite = function() {
+  var name = this['favorites']['currentName'].trim();
+  if (name === '') {
+    this['favorites']['error'] = true;
+  } else {
+    var type = this['favorites']['saving'];
+
+    var label, point;
+    if (type === 'a') {
+      this['favorites']['nameA'] = name;
+      label = this.startLabel;
+      point = /** @type {ol.geom.Point} */ (this.startFeature_.getGeometry());
+    } else {
+      this['favorites']['nameB'] = name;
+      label = this.targetLabel;
+      point = /** @type {ol.geom.Point} */ (this.targetFeature_.getGeometry());
+    }
+
+    var coord = point.getCoordinates();
+    this.favorites_.set(name, label, coord);
+    this['favorites']['saving'] = null;
+  }
+};
+
+
+/**
+ * @export
+ */
+app.MainController.prototype.cancelSavingFavorite = function() {
+  this['favorites']['saving'] = null;
 };
 
 app.module.controller('MainController', app.MainController);
