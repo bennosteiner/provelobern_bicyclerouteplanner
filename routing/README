@@ -8,13 +8,16 @@
 2. Downloading updated OSM data and prepare directory
 ./download_osm_and_prepare.sh
 
+3. go into the directory with the current date
 
-3. Importing OSM data (from a date directory)
+4. Importing OSM data (from a date directory)
 ../import_osm.sh
 
+5. stop networks until only 2 are running. f.e. stop the quiet network: sudo /etc/init.d/osrm-quiet stop
 
-4. Generating OSRM networks (from a date directory)
+6. Generating OSRM networks (from a date directory)
 ../generate_new_network.sh
+
 
 
 
