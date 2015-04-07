@@ -12,30 +12,6 @@ local sqlcon = assert( sqlenv:connect("dbname=provelo", "provelo", "provelo", "l
 module "Elevation"
 
 
-local function get_inclination_factor(inclination)
-  local i = inclination
-
-  if i < -0.15 then return 2.9479592079
-  elseif i < -0.10 then return 2.5466721397
-  elseif i < -0.05 then return 1.9485465016
-  elseif i < -0.04 then return 1.8105115095
-  elseif i < -0.03 then return 1.6645574312
-  elseif i < -0.02 then return 1.5099581678
-  elseif i < -0.01 then return 1.346454972
-  elseif i < 0.00 then return 1.1751165029
-
-  elseif i < 0.01 then return 1.0
-  elseif i < 0.02 then return 0.830002976
-  elseif i < 0.03 then return 0.678150767
-  elseif i < 0.04 then return 0.553977798
-  elseif i < 0.05 then return 0.458592821
-  elseif i < 0.10 then return 0.388053339
-  elseif i < 0.15 then return 0.211273485
-  else return 0.142745166
-  end
-end
-
-
 local function compute_inclination(h1, h2, length)
   if (length == 0) then
     return 0.0 -- no inclination
@@ -43,7 +19,6 @@ local function compute_inclination(h1, h2, length)
     return (h2 - h1) / length
   end
 end
-
 
 local function compute_average_inclination_factors(segments)
   local forward = 0

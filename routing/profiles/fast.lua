@@ -16,19 +16,51 @@ default_speed = 16
 
 walking_speed = 6
 
+velocity_gains = {
+  ["primary"] = 1,
+  ["secondary"] = 1,
+  ["tertiary"] = 1
+}
+
+-- Define the get_inclination_factor in the Elevation module
+Elevation.get_inclination_factor = function (inclination)
+  local i = inclination
+
+  if i < -0.07 then return 1.9
+  elseif i < -0.06 then return 1.8
+  elseif i < -0.05 then return 1.7
+  elseif i < -0.04 then return 1.6
+  elseif i < -0.03 then return 1.5
+  elseif i < -0.02 then return 1.4
+  elseif i < -0.01 then return 1.3
+  elseif i < 0.00 then return 1.15
+
+  elseif i < 0.01 then return 0.9
+  elseif i < 0.02 then return 0.8
+  elseif i < 0.03 then return 0.7
+  elseif i < 0.04 then return 0.6
+  elseif i < 0.05 then return 0.55
+  elseif i < 0.06 then return 0.5
+  elseif i < 0.07 then return 0.45
+  elseif i < 0.09 then return 0.4
+  elseif i < 0.1 then return 0.35
+  else return 0.3
+  end
+end
+
 bicycle_speeds = {
   ["cycleway"] = 18,
   ["primary"] = 15,
   ["primary_link"] = 15,
-  ["secondary"] = 16,
-  ["secondary_link"] = 16,
+  ["secondary"] = 15,
+  ["secondary_link"] = 15,
   ["tertiary"] = 17,
   ["tertiary_link"] = 17,
   ["residential"] = 18,
   ["unclassified"] = 18,
   ["living_street"] = 18,
-  ["road"] = 17,
-  ["service"] = 17,
+  ["road"] = 18,
+  ["service"] = 18,
   ["track"] = 6,
   ["path"] = 6
 }
@@ -367,16 +399,19 @@ function way_function (way)
     end
   end
 
-  if (cycleway) and (highway == 'primary' or highway == 'secondary') then
-    way.forward_speed = way.forward_speed + 1
-    way.backward_speed = way.backward_speed + 1
+  if (cycleway) then
+    local velocity_gain = velocity_gains[highway]
+    if (velocity_gain) then
+      way.forward_speed = way.forward_speed + velocity_gain
+      way.backward_speed = way.backward_speed + velocity_gain
+    end
   end
 
   -- elevation
   -- limiting speed on each of the way segments would be more accurate
   -- print('ID ' ..way.id..' XX')
   if "" == bridge then -- bridge are skipped from the elevation rule
-    Elevation.compute_speed( way )
+    Elevation.compute_speed( way, get_inclination_factor )
   end
 
   -- maxspeed
