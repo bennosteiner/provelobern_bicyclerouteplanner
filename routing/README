@@ -13,7 +13,11 @@
 4. Importing OSM data (from a date directory)
 ../import_osm.sh
 
-5. stop networks until only 2 are running. f.e. stop the quiet network: sudo /etc/init.d/osrm-quiet stop
+5. stop networks until only 2 are running.
+There is not enough RAM memory; we must free some memory to avoid a
+'bad alloc' exception. F.e. by stopping the quiet and upstream networks:
+sudo /etc/init.d/osrm-quiet stop
+sudo /etc/init.d/osrm-upstream stop
 
 6. Generating OSRM networks (from a date directory)
 ../generate_new_network.sh
