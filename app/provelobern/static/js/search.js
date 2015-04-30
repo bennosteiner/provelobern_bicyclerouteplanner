@@ -1,3 +1,4 @@
+goog.provide('app.SearchController');
 goog.provide('app.searchDirective');
 
 goog.require('app');
@@ -65,23 +66,11 @@ app.SearchController = function($scope, $element, gettextCatalog,
                 '&limit=' + app.SearchController.LIMIT;
       },
       filter: function(resp) {
-        // we are not using the provided `display_name` field because it is too
-        // verboose. instead we build a custom label from the address details
-        // ignoring some of the address fields.
-        var blacklist = [
-          'county', 'state_district', 'country', 'country_code'];
-
         var datums = /** @type {Array.<BloodhoundDatum>} */ (resp);
         return datums.map(function(datum) {
-          var addressKeys = goog.object.getKeys(/** @type {Object} */
-              (datum['address']));
-          var addressDetails = [];
-          goog.array.forEach(addressKeys, function(key) {
-            if (!goog.array.contains(blacklist, key)) {
-              addressDetails.push(datum['address'][key]);
-            }
-          });
-          datum['label'] = addressDetails.join(', ');
+          datum['label'] =
+              app.SearchController.formatAddress(/** @type {Object} */
+                  (datum['address']));
 
           return datum;
         });
@@ -227,4 +216,27 @@ app.SearchController.matchCoordinate = function(query) {
     return [left, right];
   }
   return null;
+};
+
+
+/**
+ * @param {Object} address
+ * @return {string}
+*/
+app.SearchController.formatAddress = function(address) {
+  // we are not using the provided `display_name` field because it is too
+  // verbose. instead we build a custom label from the address details
+  // ignoring some of the address fields.
+  var blacklist = [
+    'county', 'state_district', 'country', 'country_code'];
+
+  var addressKeys = goog.object.getKeys(address);
+  var addressDetails = [];
+  goog.array.forEach(addressKeys, function(key) {
+    if (!goog.array.contains(blacklist, key)) {
+      addressDetails.push(address[key]);
+    }
+  });
+
+  return addressDetails.join(', ');
 };

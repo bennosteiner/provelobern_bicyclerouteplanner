@@ -5,6 +5,7 @@ goog.require('app.Drag');
 goog.require('app.Favorites');
 goog.require('app.GeoLocateControl');
 goog.require('app.InfoControl');
+goog.require('app.SearchController');
 goog.require('app.searchDirective');
 goog.require('goog.asserts');
 goog.require('goog.dom');
@@ -57,6 +58,11 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
       'http://provelobern-geomapfish.prod.sig.cloud.camptocamp.net/' +
       '{profile}/viaroute?loc={from}&loc={to}&instructions=false&alt=false' +
       '&z={zoom}&output=json';
+
+  this.nominatimUrl_ =
+      'http://nominatim.openstreetmap.org/reverse?' +
+      'lon={lon}&lat={lat}&format=jsonv2&addressdetails=1&' +
+      'accept-language={language}&zoom={zoom}';
 
   /**
    * @type {angularGettext.Catalog}
@@ -367,13 +373,74 @@ app.MainController.prototype.updateInputText_ = function(feature) {
     this['startText'] = label;
     this.startLabel = label;
     this['favorites']['nameA'] = '';
+    this.reverseGeocode_(feature, true);
   } else if (feature === this.targetFeature_) {
     label = this.formatCoordinate_(geometry);
     this['targetText'] = label;
     this.targetLabel = label;
     this['favorites']['nameB'] = '';
+    this.reverseGeocode_(feature, false);
   }
   this['scope'].$apply();
+};
+
+
+/**
+ * Reverse-geocode a coordinate and use the address as new label.
+ *
+ * @param {ol.Feature} feature The feature that has changed.
+ * @param {boolean} isStartFeature
+ * @private
+ */
+app.MainController.prototype.reverseGeocode_ =
+    function(feature, isStartFeature) {
+  var geometry = /** @type {ol.geom.Point} */ (
+      feature.getGeometry().clone());
+  var geometry4326 = /** @type {ol.geom.Point} */ (
+      geometry.clone().transform('EPSG:3857', 'EPSG:4326'));
+  var coord = geometry4326.getCoordinates();
+
+  var url = this.nominatimUrl_
+    .replace('{lon}', coord[0].toFixed(8))
+    .replace('{lat}', coord[1].toFixed(8))
+    .replace('{language}', this.gettextCatalog_.currentLanguage)
+    .replace('{zoom}', '18');
+
+  goog.net.XhrIo.send(url, goog.bind(function(e) {
+    var xhr = /** @type {goog.net.XhrIo} */ (e.target);
+    if (!xhr.isSuccess()) {
+      return;
+    }
+    var response = xhr.getResponseJson();
+    if (!goog.isDef(response['error'])) {
+      var addressDetails = response['address'];
+      var label = app.SearchController.formatAddress(/** @type {Object} */
+          (addressDetails));
+
+      var currentFeature = isStartFeature ?
+          this.startFeature_ : this.targetFeature_;
+      if (goog.isNull(currentFeature)) {
+        return;
+      }
+      var currentPoint = /** @type {ol.geom.Point} */ (
+          currentFeature.getGeometry());
+      if (!goog.array.equals(
+          geometry.getCoordinates(),
+          currentPoint.getCoordinates())) {
+        // do not use the label if the position has changed
+        return;
+      }
+
+      if (isStartFeature) {
+        this['startText'] = label;
+        this.startLabel = label;
+      } else {
+        this['targetText'] = label;
+        this.targetLabel = label;
+      }
+      this['scope'].$apply();
+    }
+  }, this));
 };
 
 
