@@ -24,7 +24,7 @@ msgstr "Abbrechen"
 
 #: provelobern/templates/index.html
 msgid "Direct"
-msgstr "Direkt"
+msgstr "Schnell & Direkt"
 
 #: provelobern/templates/index.html
 msgid "Distance:"
@@ -55,8 +55,8 @@ msgid "No route found between the two given positions."
 msgstr "Es konnte keine Route zwischen den zwei Positionen ermittelt werden."
 
 #: provelobern/templates/index.html
-msgid "Optimized"
-msgstr "Optimiert"
+msgid "Quiet & Comfortable"
+msgstr "Ruhig & Komfortabel"
 
 #: provelobern/templates/index.html
 msgid "Save"

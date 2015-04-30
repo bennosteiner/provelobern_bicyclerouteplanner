@@ -48,7 +48,7 @@ msgid "No route found between the two given positions."
 msgstr ""
 
 #: provelobern/templates/index.html
-msgid "Optimized"
+msgid "Quiet & Comfortable"
 msgstr ""
 
 #: provelobern/templates/index.html
