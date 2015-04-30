@@ -139,6 +139,14 @@ app.SearchController = function($scope, $element, gettextCatalog,
     view.setCenter(geometry.getCoordinates());
     view.setZoom(15);
   }, this));
+
+  $element.on('focusout', goog.bind(function(event) {
+    // make sure that the current value is not lost on focusout
+    var value = $element[0].value;
+    if (value !== '') {
+      $element.typeahead('val', value);
+    }
+  }, this));
 };
 
 app.module.controller('appSearchController', app.SearchController);
