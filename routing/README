@@ -22,8 +22,12 @@ sudo /etc/init.d/osrm-upstream stop
 6. Generating OSRM networks (from a date directory)
 ../generate_new_network.sh
 
-
-
+7. start the stopped networks
+sudo /etc/init.d/osrm-quiet start
+(and check that the others are started as well:
+sudo /etc/init.d/osrm-ebike start
+sudo /etc/init.d/osrm-fast start
+)
 
 ----- Useful commands and notes -----
 Extract Bern area  osmosis  --read-xml enableDateParsing=no file=swiss/switzerland-padded.osm  --bounding-box top=47 left=7.2 bottom=46.9 right=7.6 --write-xml file=swiss_extract.osm
