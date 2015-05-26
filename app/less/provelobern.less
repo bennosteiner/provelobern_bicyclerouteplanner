@@ -123,6 +123,7 @@ html, body, #map {
 
   .input-group {
     margin-top: 6px;
+    position: relative;
   }
 
   .input-addon {
@@ -158,6 +159,24 @@ html, body, #map {
   .routing-type .btn-primary.active {
     background-color: #828282;
     border-color: #828282;
+  }
+
+  .reverse-route-box {
+    position: absolute;
+    right: -43px;
+    bottom: -15px;
+
+    a {
+      font-size: 20px;
+      text-decoration: none;
+
+      &:visited, &:link {
+        color: #464646;
+      }
+      &:hover, &:active {
+        color: #828282;
+      }
+    }
   }
 }
 

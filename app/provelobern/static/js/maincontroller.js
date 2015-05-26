@@ -445,6 +445,66 @@ app.MainController.prototype.reverseGeocode_ =
 
 
 /**
+ * @export
+ */
+app.MainController.prototype.reverseRoute = function() {
+  var startFeature = this.startFeature_;
+  var startLabel = this['startText'];
+  var targetFeature = this.targetFeature_;
+  var targetLabel = this['targetText'];
+
+  this.resetStart_();
+  this.resetTarget_();
+
+  if (!goog.isNull(startFeature)) {
+    this['targetText'] = startLabel;
+    this.targetLabel = startLabel;
+    this.setTargetCoordinate_(
+        (/** @type {ol.geom.Point} */ (startFeature.getGeometry()))
+            .getCoordinates());
+  }
+
+  if (!goog.isNull(targetFeature)) {
+    this['startText'] = targetLabel;
+    this.startLabel = targetLabel;
+    this.setStartCoordinate_(
+        (/** @type {ol.geom.Point} */ (targetFeature.getGeometry()))
+            .getCoordinates());
+  }
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.resetStart_ = function() {
+  if (!goog.isNull(this.startFeature_)) {
+    this.vectorSource_.removeFeature(this.startFeature_);
+  }
+  this.startFeature_ = null;
+  this['startText'] = null;
+  this.startLabel = null;
+  this['favorites']['activeA'] = false;
+  this['favorites']['nameA'] = '';
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.resetTarget_ = function() {
+  if (!goog.isNull(this.targetFeature_)) {
+    this.vectorSource_.removeFeature(this.targetFeature_);
+  }
+  this.targetFeature_ = null;
+  this['targetText'] = null;
+  this.targetLabel = null;
+  this['favorites']['activeB'] = false;
+  this['favorites']['nameB'] = '';
+};
+
+
+/**
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} Reprojected and formatted coordinate.
  * @private
