@@ -14,6 +14,7 @@ goog.require('goog.i18n.NumberFormatSymbols_de');
 goog.require('goog.i18n.NumberFormatSymbols_en');
 goog.require('goog.net.CorsXmlHttpFactory');
 goog.require('goog.net.XhrIo');
+goog.require('ngeo.Debounce');
 goog.require('ngeo.GetBrowserLanguage');
 goog.require('ngeo.Location');
 goog.require('ngeo.btnDirective');
@@ -45,12 +46,13 @@ goog.require('ol.style.Style');
  * @param {ngeo.Location} ngeoLocation ngeo Location service.
  * @param {angularLocalStorage.localStorageService} localStorageService
  *        LocalStorage service.
+ * @param {ngeo.Debounce} ngeoDebounce ngeo Debounce service.
  * @constructor
  * @export
  * @ngInject
  */
 app.MainController = function($scope, gettextCatalog, langUrlTemplate,
-    ngeoGetBrowserLanguage, ngeoLocation, localStorageService) {
+    ngeoGetBrowserLanguage, ngeoLocation, localStorageService, ngeoDebounce) {
 
   this['scope'] = $scope;
 
@@ -75,6 +77,12 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
    * @private
    */
   this.langUrlTemplate_ = langUrlTemplate;
+
+  /**
+   * @type {ngeo.Location}
+   * @private
+   */
+  this.ngeoLocation_ = ngeoLocation;
 
   /**
    * @private
@@ -159,6 +167,20 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     this.updateRoute();
   }, this);
 
+  // restore position from URL
+  var zoom = parseInt(ngeoLocation.getParam('z'), 10);
+  var x = parseFloat(ngeoLocation.getParam('x'));
+  var y = parseFloat(ngeoLocation.getParam('y'));
+  var center = [x, y];
+  var restoringPosition = false;
+  if (goog.math.isFiniteNumber(zoom) &&
+      goog.math.isFiniteNumber(x) && goog.math.isFiniteNumber(y)) {
+    restoringPosition = true;
+  } else {
+    zoom = 10;
+    center = ol.proj.transform([8.415, 47.027], 'EPSG:4326', 'EPSG:3857');
+  }
+
   /**
    * @private
    * @type {ol.Map}
@@ -199,8 +221,8 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
       this.vectorLayer_
     ],
     view: new ol.View({
-      center: ol.proj.transform([8.415, 47.027], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 10,
+      center: center,
+      zoom: zoom,
       maxZoom: 19
     }),
     controls: ol.control.defaults({
@@ -234,17 +256,24 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     interactions: ol.interaction.defaults().extend([dragInteraction])
   });
 
-  var size = this.map_.getSize();
-  if (goog.isDef(size)) {
-    this.map_.getView().fitExtent(this.extentBern_, size);
-  } else {
-    this.map_.once('change:size', function() {
-      var size = this.map_.getSize();
-      goog.asserts.assert(goog.isDef(size));
-      this.map_.getView().fitExtent(
-          this.extentBern_, /** @type {ol.Size} */ (size));
-    }, this);
+  if (!restoringPosition) {
+    var size = this.map_.getSize();
+    if (goog.isDef(size)) {
+      this.map_.getView().fitExtent(this.extentBern_, size);
+    } else {
+      this.map_.once('change:size', function() {
+        var size = this.map_.getSize();
+        goog.asserts.assert(goog.isDef(size));
+        this.map_.getView().fitExtent(
+            this.extentBern_, /** @type {ol.Size} */ (size));
+      }, this);
+    }
   }
+
+  var view = this.map_.getView();
+  view.on('propertychange',
+      ngeoDebounce(
+          goog.bind(this.updateUrl_, this), 300, /* invokeApply */ true));
 
   this.map_.on('singleclick', this.handleMapClick_, this);
 
@@ -276,6 +305,8 @@ app.MainController = function($scope, gettextCatalog, langUrlTemplate,
     'nameA': '',
     'nameB': ''
   };
+
+  this.restoreRouteFromUrl_();
 };
 
 
@@ -290,6 +321,64 @@ app.MainController.prototype.switchLanguage = function(lang) {
         this.langUrlTemplate_.replace('__lang__', lang));
   }
   this['lang'] = lang;
+};
+
+
+/**
+ * @private
+ */
+app.MainController.prototype.updateUrl_ = function() {
+  var view = this.map_.getView();
+  var center = view.getCenter();
+  var params = {
+    'z': view.getZoom(),
+    'x': Math.round(center[0]),
+    'y': Math.round(center[1])
+  };
+
+  if (!goog.isNull(this.startFeature_)) {
+    var startCoords = (/** @type {ol.geom.Point} */ (
+        this.startFeature_.getGeometry())).getCoordinates();
+    params['sx'] = Math.round(startCoords[0]);
+    params['sy'] = Math.round(startCoords[1]);
+  }
+
+  if (!goog.isNull(this.targetFeature_)) {
+    var targetCoords = (/** @type {ol.geom.Point} */ (
+        this.targetFeature_.getGeometry())).getCoordinates();
+    params['tx'] = Math.round(targetCoords[0]);
+    params['ty'] = Math.round(targetCoords[1]);
+  }
+  params['p'] = this.getProfile_().charAt(0);
+
+  this.ngeoLocation_.updateParams(params);
+};
+
+
+/**
+ * Try to restore the route from the URL.
+ * @private
+ */
+app.MainController.prototype.restoreRouteFromUrl_ = function() {
+  var startX = parseFloat(this.ngeoLocation_.getParam('sx'));
+  var startY = parseFloat(this.ngeoLocation_.getParam('sy'));
+  var targetX = parseFloat(this.ngeoLocation_.getParam('tx'));
+  var targetY = parseFloat(this.ngeoLocation_.getParam('ty'));
+
+  var profile = this.ngeoLocation_.getParam('p');
+  this.setProfile_(
+      profile === 'q' ? 'quiet' :
+      profile === 'e' ? 'ebike' : 'fast');
+
+  if (goog.math.isFiniteNumber(startX) && goog.math.isFiniteNumber(startY)) {
+    this.setStartCoordinate_([startX, startY]);
+    this.updateInputText_(this.startFeature_, false);
+  }
+
+  if (goog.math.isFiniteNumber(targetX) && goog.math.isFiniteNumber(targetY)) {
+    this.setTargetCoordinate_([targetX, targetY]);
+    this.updateInputText_(this.targetFeature_, false);
+  }
 };
 
 
@@ -351,6 +440,7 @@ app.MainController.prototype.setTargetCoordinate_ = function(coord) {
  * @export
  */
 app.MainController.prototype.updateRoute = function() {
+  this.updateUrl_();
   this.routeSource_.clear();
   if (this.startFeature_ === null || this.targetFeature_ === null) {
     return;
@@ -361,9 +451,11 @@ app.MainController.prototype.updateRoute = function() {
 
 /**
  * @param {ol.Feature} feature The feature that has changed.
+ * @param {boolean=} opt_applyScope Apply scope? (default: true)
  * @private
  */
-app.MainController.prototype.updateInputText_ = function(feature) {
+app.MainController.prototype.updateInputText_ =
+    function(feature, opt_applyScope) {
   var geometry = feature.getGeometry();
   goog.asserts.assert(goog.isDef(geometry));
 
@@ -381,7 +473,9 @@ app.MainController.prototype.updateInputText_ = function(feature) {
     this['favorites']['nameB'] = '';
     this.reverseGeocode_(feature, false);
   }
-  this['scope'].$apply();
+  if (!goog.isDef(opt_applyScope) || opt_applyScope) {
+    this['scope'].$apply();
+  }
 };
 
 
@@ -536,6 +630,19 @@ app.MainController.prototype.getProfile_ = function() {
   } else {
     return 'ebike';
   }
+};
+
+
+/**
+ * @private
+ * @param {string} profile The profile to use.
+ */
+app.MainController.prototype.setProfile_ = function(profile) {
+  goog.asserts.assert(
+      profile === 'fast' || profile === 'quiet' || profile === 'ebike');
+  this['profile']['fast'] = profile === 'fast';
+  this['profile']['quiet'] = profile === 'quiet';
+  this['profile']['ebike'] = profile === 'ebike';
 };
 
 
