@@ -59,8 +59,8 @@ bicycle_speeds = {
   ["living_street"] = 18,
   ["road"] = 18,
   ["service"] = 18,
-  ["track"] = 6,
-  ["path"] = 6
+  ["track"] = 16,
+  ["path"] = 16
 }
 
 pedestrian_speeds = {
