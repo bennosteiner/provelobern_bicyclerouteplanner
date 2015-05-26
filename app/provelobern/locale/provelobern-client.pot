@@ -77,6 +77,10 @@ msgid "Quiet"
 msgstr ""
 
 #: provelobern/templates/index.html
+msgid "Reverse route"
+msgstr ""
+
+#: provelobern/templates/index.html
 msgid "Save"
 msgstr ""
 

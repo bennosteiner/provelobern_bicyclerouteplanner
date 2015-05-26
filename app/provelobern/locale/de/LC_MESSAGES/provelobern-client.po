@@ -120,6 +120,10 @@ msgid "Quiet"
 msgstr "Ruhig"
 
 #: provelobern/templates/index.html
+msgid "Reverse route"
+msgstr "Start und Ziel vertauschen"
+
+#: provelobern/templates/index.html
 msgid "Save"
 msgstr "Speichern"
 
