@@ -50,10 +50,10 @@ end
 
 bicycle_speeds = {
   ["cycleway"] = 18,
-  ["primary"] = 15,
-  ["primary_link"] = 15,
-  ["secondary"] = 15,
-  ["secondary_link"] = 15,
+  ["primary"] = 200,
+  ["primary_link"] = 200,
+  ["secondary"] = 200,
+  ["secondary_link"] = 200,
   ["tertiary"] = 17,
   ["tertiary_link"] = 17,
   ["residential"] = 18,
