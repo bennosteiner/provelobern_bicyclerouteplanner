@@ -37,6 +37,12 @@ cleanup() {
 trap "cleanup" INT TERM EXIT
 
 
+# Cleanup stxxl memory file
+rm -f /tmp/stxxl
+touch /tmp/stxxl
+chmod ugo+rw /tmp/stxxl
+
+
 # Uncompress since osrm runs out of memory when using the pbf file directly
 if [ ! -e $OSMFILE ]
 then
