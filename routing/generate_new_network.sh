@@ -28,6 +28,13 @@ then
   PROFILES="$*"
 fi
 
+# Cleanup stxxl memory file before registering error handlers
+rm -f /tmp/stxxl
+touch /tmp/stxxl
+chmod ugo+rw /tmp/stxxl
+
+
+# Registering error handlers
 set -o errexit
 
 cleanup() {
@@ -35,12 +42,6 @@ cleanup() {
   rm -f /tmp/stxxl
 }
 trap "cleanup" INT TERM EXIT
-
-
-# Cleanup stxxl memory file
-rm -f /tmp/stxxl
-touch /tmp/stxxl
-chmod ugo+rw /tmp/stxxl
 
 
 # Uncompress since osrm runs out of memory when using the pbf file directly
