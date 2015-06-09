@@ -119,8 +119,8 @@ ignore_areas      = true    -- future feature
 traffic_signal_penalty  = 5
 u_turn_penalty      = 20
 use_turn_restrictions   = false
-turn_penalty      = 0
-turn_bias         = 1.4
+turn_penalty      = 45
+turn_bias         = 1.0
 
 
 --modes
