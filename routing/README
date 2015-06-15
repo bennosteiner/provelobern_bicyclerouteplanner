@@ -5,7 +5,12 @@
 ./import_srtm.sh
 
 
-2. Downloading updated OSM data and prepare directory
+2.a) Check that there are not more than 3 date folders in /var/www/vhosts/provelobern-geomapfish/private/provelobern_bicyclerouteplanner/routing:
+ cd /var/www/vhosts/provelobern-geomapfish/private/provelobern_bicyclerouteplanner/routing
+ ls
+ -> if there are more than 3, delete the oldest ones with rm -rf <name of the folder to delete>
+
+2.b) Downloading updated OSM data and prepare directory
 ./download_osm_and_prepare.sh
 
 3. go into the directory with the current date
