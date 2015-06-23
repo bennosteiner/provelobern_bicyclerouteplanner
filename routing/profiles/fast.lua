@@ -5,7 +5,7 @@ require("lib/elevation")
 -- Begin of globals
 barrier_whitelist = { [""] = true, ["cycle_barrier"] = true, ["bollard"] = true, ["entrance"] = true, ["cattle_grid"] = true, ["border_control"] = true, ["toll_booth"] = true, ["sally_port"] = true, ["gate"] = true, ["no"] = true }
 access_tag_whitelist = { ["yes"] = true, ["permissive"] = true, ["designated"] = true }
-access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestery"] = true }
+access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestery"] = true, ["railway"] = true }
 access_tag_restricted = { ["destination"] = true, ["delivery"] = true }
 access_tags_hierachy = { "bicycle", "vehicle", "access" }
 cycleway_tags = {["track"]=true,["lane"]=true,["opposite"]=true,["opposite_lane"]=true,["opposite_track"]=true,["share_busway"]=true,["sharrow"]=true,["shared"]=true }
@@ -365,10 +365,10 @@ function way_function (way)
     if foot ~= "no" and junction ~= "roundabout" then
       if way.backward_mode == 0 then
         way.backward_speed = walking_speed
-        way.backward_mode = mode_pushing
+        way.backward_mode = 0
       elseif way.forward_mode == 0 then
         way.forward_speed = walking_speed
-        way.forward_mode = mode_pushing
+        way.forward_mode = 0
       end
     end
   end
