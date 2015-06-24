@@ -92,7 +92,8 @@ man_made_speeds = {
 }
 
 route_speeds = {
-  ["ferry"] = 5
+  ["ferry"] = 5,
+  ["shuttle_train"] = 5
 }
 
 surface_penalties = { 
@@ -363,10 +364,10 @@ function way_function (way)
     if foot ~= "no" and junction ~= "roundabout" then
       if way.backward_mode == 0 then
         way.backward_speed = walking_speed
-        way.backward_mode = mode_pushing
+        way.backward_mode = 0
       elseif way.forward_mode == 0 then
         way.forward_speed = walking_speed
-        way.forward_mode = mode_pushing
+        way.forward_mode = 0
       end
     end
   end
