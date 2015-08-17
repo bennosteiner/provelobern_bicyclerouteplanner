@@ -1,0 +1,2 @@
+The following crontab entry must be added as the sigdev user:
+0 6 * * * /var/www/vhosts/provelobern-geomapfish/private/provelobern_bicyclerouteplanner/routing/automated_update.sh
