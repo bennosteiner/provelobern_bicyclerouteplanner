@@ -51,7 +51,7 @@ msgstr ""
 "Strassenverkehrsrecht.</p><p>Die Betreiberinnen des Veloroutenplaners "
 "übernehmen keine Haftung für die vorgeschlagenen Routen.</p><p>Rückmeldungen "
 "bitte an <a href=\"mailto:veloroutenplaner@provelobern.ch"
-"\">veloroutenplaner@provelobern.ch</a>. Gute Fahrt!</p><p><Pro Velo Bern, "
+"\">veloroutenplaner@provelobern.ch</a>. Gute Fahrt!</p><p>Pro Velo Bern, "
 "Birkenweg 61, 3013 Bern<br/>Stadt Bern, Fachstelle Fuss- und Veloverkehr, "
 "Zieglerstrasse 62, Postfach, 3011 Bern</p>"
 
