@@ -12,6 +12,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Remove all temporary switzerland-padded.osm files except last one
+find 2* -name switzerland-padded.osm | sort | head -n -1 | xargs rm
+
 # osm update
 ./download_osm_and_prepare.sh
 
