@@ -59,7 +59,8 @@ install: build install-dev-egg .build/node_modules.timestamp
 lint: .build/venv/bin/gjslint .build/node_modules.timestamp .build/gjslint.timestamp .build/jshint.timestamp
 
 .PHONY: install-dev-egg
-install-dev-egg: $(SITE_PACKAGES)/provelobern.egg-link
+install-dev-egg: .build/venv setup.py
+	.build/venv/bin/pip install -r requirements.txt
 
 .PHONY: serve
 serve: install build common.ini
@@ -133,9 +134,6 @@ provelobern/static/build/locale/de/provelobern.json: provelobern/locale/de/LC_ME
 .build/venv:
 	mkdir -p $(dir $@)
 	virtualenv --no-site-packages $@
-
-$(SITE PACKAGES)/provelobern.egg-link: .build/venv setup.py
-	.build/venv/bin/pip install -r requirements.txt
 
 common.ini: common.ini.in
 	sed 's|__CLOSURE_LIBRARY_PATH__|$(CLOSURE_LIBRARY_PATH)|' $< > $@

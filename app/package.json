@@ -5,27 +5,28 @@
   "scripts": {},
   "license": "BSD",
   "dependencies": {
-    "async": "~0.2.10"
+    "async": "0.2.10"
   },
   "devDependencies": {
     "angular": "1.3.5",
     "angular-gettext": "1.1.3",
     "angular-gettext-tools": "1.0.4",
-    "angular-local-storage": "~0.1.5",
+    "angular-local-storage": "0.1.5",
     "openlayers": "openlayers/ol3#v3.2.0",
-    "ngeo": "camptocamp/ngeo#master",
-    "closure-externs": "~0.0.1",
-    "typeahead.js": "~0.10.5",
-    "less": "~2.0.0",
-    "less-plugin-clean-css": "~1.1.0",
-    "fs-extra": "~0.8.1",
-    "jsdoc": "~3.3.0-alpha7",
-    "jshint": "~2.5.1",
-    "nomnom": "~1.6.2",
-    "phantomjs": "~1.9.7-5",
-    "temp": "~0.7.0",
-    "walk": "~2.3.3",
-    "bootstrap": "~3.3.1",
-    "jquery": "~2.1.1"
+    "ngeo": "camptocamp/ngeo#47b6a8d2cfcec3c65bd9d468f7e91ff51a4797b4",
+    "closure-util": "1.3.0",
+    "graceful-fs": "3.0.2",
+    "closure-externs": "0.0.1",
+    "typeahead.js": "0.10.5",
+    "less": "2.0.0",
+    "less-plugin-clean-css": "1.1.0",
+    "fs-extra": "0.8.1",
+    "jsdoc": "3.3.0-alpha7",
+    "jshint": "2.5.1",
+    "nomnom": "1.6.2",
+    "temp": "0.7.0",
+    "walk": "2.3.3",
+    "bootstrap": "3.3.1",
+    "jquery": "2.1.1"
   }
 }

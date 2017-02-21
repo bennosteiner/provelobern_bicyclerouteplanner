@@ -58,14 +58,17 @@ function getConfig(configPath, callback) {
  *     with the patterns and symbols (or any error).
  */
 function getSymbols(patterns, callback) {
-  generateInfo(function(err) {
-    if (err) {
-      callback(new Error('Trouble generating info: ' + err.message));
-      return;
-    }
-    var symbols = require('../.build/info.json').symbols;
-    callback(null, patterns, symbols);
-  });
+  // FIXME not generating the exports, using the committed file .build/info.json
+  var symbols = require('../.build/info.json').symbols;
+  callback(null, patterns, symbols);
+  // generateInfo(function(err) {
+  //   if (err) {
+  //     callback(new Error('Trouble generating info: ' + err.message));
+  //     return;
+  //   }
+  //   var symbols = require('../.build/info.json').symbols;
+  //   callback(null, patterns, symbols);
+  // });
 }
 
 

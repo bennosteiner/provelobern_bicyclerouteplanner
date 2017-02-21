@@ -1,0 +1,84 @@
+{
+  "symbols": [
+    {
+      "name": "ol.WEBGL_MAX_TEXTURE_SIZE",
+      "kind": "constant",
+      "description": "The maximum supported WebGL texture size in pixels. If WebGL is not\nsupported, the value is set to `undefined`.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "provides": [
+        "ol"
+      ]
+    },
+    {
+      "name": "ol.inherits",
+      "kind": "function",
+      "description": "Inherit the prototype methods from one constructor into another.\n\nUsage:\n\n    function ParentClass(a, b) { }\n    ParentClass.prototype.foo = function(a) { }\n\n    function ChildClass(a, b, c) {\n      // Call parent constructor\n      ParentClass.call(this, a, b);\n    }\n    ol.inherits(ChildClass, ParentClass);\n\n    var child = new ChildClass('a', 'b', 'see');\n    child.foo(); // This works.\n\nIn addition, a superclass' implementation of a method can be invoked as\nfollows:\n\n    ChildClass.prototype.foo = function(a) {\n      ChildClass.base(this, 'foo', a);\n      // Other code here.\n    };",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "provides": [
+        "ol"
+      ]
+    }
+  ],
+  "defines": [
+    {
+      "name": "ol.ASSUME_TOUCH",
+      "description": "Assume touch.  Default is `false`.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": false
+    },
+    {
+      "name": "ol.ENABLE_CANVAS",
+      "description": "Enable the Canvas renderer.  Default is `true`. Setting\n    this to false at compile time in advanced mode removes all code\n    supporting the Canvas renderer from the build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_DOM",
+      "description": "Enable the DOM renderer (used as a fallback where Canvas is\n    not available).  Default is `true`. Setting this to false at compile time\n    in advanced mode removes all code supporting the DOM renderer from the\n    build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_IMAGE",
+      "description": "Enable rendering of ol.layer.Image based layers.  Default\n    is `true`. Setting this to false at compile time in advanced mode removes\n    all code supporting Image layers from the build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_NAMED_COLORS",
+      "description": "Enable Closure named colors (`goog.color.names`).\n    Enabling these colors adds about 3KB uncompressed / 1.5KB compressed to\n    the final build size.  Default is `false`. This setting has no effect\n    with Canvas renderer, which uses its own names, whether this is true or\n    false.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": false
+    },
+    {
+      "name": "ol.ENABLE_PROJ4JS",
+      "description": "Enable integration with the Proj4js library.  Default is\n    `true`.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_TILE",
+      "description": "Enable rendering of ol.layer.Tile based layers.  Default is\n    `true`. Setting this to false at compile time in advanced mode removes\n    all code supporting Tile layers from the build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_VECTOR",
+      "description": "Enable rendering of ol.layer.Vector based layers.  Default\n    is `true`. Setting this to false at compile time in advanced mode removes\n    all code supporting Vector layers from the build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.ENABLE_WEBGL",
+      "description": "Enable the WebGL renderer.  Default is `true`. Setting\n    this to false at compile time in advanced mode removes all code\n    supporting the WebGL renderer from the build.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": true
+    },
+    {
+      "name": "ol.LEGACY_IE_SUPPORT",
+      "description": "Support legacy IE (7-8).  Default is `false`.\n    If set to `true`, `goog.array.ASSUME_NATIVE_FUNCTIONS` must be set\n    to `false` because legacy IE do not support ECMAScript 5 array functions.",
+      "path": "/home/tsauerwein/projects/provelobern/provelobern/app/node_modules/openlayers/src/ol/ol.js",
+      "default": false
+    }
+  ]
+}
